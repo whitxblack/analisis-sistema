@@ -5,6 +5,16 @@
 -- Habilitar extensión para UUIDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Limpiar tablas si ya existen (evita errores al re-ejecutar)
+DROP TABLE IF EXISTS seguimientos CASCADE;
+DROP TABLE IF EXISTS facturas CASCADE;
+DROP TABLE IF EXISTS reposiciones CASCADE;
+DROP TABLE IF EXISTS movimientos CASCADE;
+DROP TABLE IF EXISTS productos CASCADE;
+DROP TABLE IF EXISTS pedidos CASCADE;
+DROP TABLE IF EXISTS tecnicos CASCADE;
+DROP TABLE IF EXISTS usuarios CASCADE;
+
 -- 1. Tabla Usuarios
 CREATE TABLE usuarios (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
