@@ -145,6 +145,19 @@ CREATE TABLE seguimientos (
 );
 
 -- ==========================================
+-- Desactivar RLS (Row-Level Security)
+-- ==========================================
+-- Esto evita errores de permisos al crear registros desde la web sin configurar políticas de Supabase Auth complejas.
+ALTER TABLE usuarios DISABLE ROW LEVEL SECURITY;
+ALTER TABLE tecnicos DISABLE ROW LEVEL SECURITY;
+ALTER TABLE pedidos DISABLE ROW LEVEL SECURITY;
+ALTER TABLE productos DISABLE ROW LEVEL SECURITY;
+ALTER TABLE movimientos DISABLE ROW LEVEL SECURITY;
+ALTER TABLE reposiciones DISABLE ROW LEVEL SECURITY;
+ALTER TABLE facturas DISABLE ROW LEVEL SECURITY;
+ALTER TABLE seguimientos DISABLE ROW LEVEL SECURITY;
+
+-- ==========================================
 -- Insertar Datos de Demostración
 -- ==========================================
 
