@@ -127,6 +127,29 @@ const Tecnicos = () => {
     showToast(`Técnico ${tec.nombre} asignado al pedido ${selectedPedido.id.toUpperCase()}`);
   };
 
+  const handleUnassign = (pedido) => {
+    const tecId = pedido.tecnicoId;
+    updatePedido(pedido.id, {
+      tecnicoId: null,
+      tecnicoNombre: null,
+      fechaInstalacion: null,
+      horarioInstalacion: null,
+      estado: 'aprobado',
+    });
+    
+    if (tecId) {
+      const tec = tecnicos.find(t => t.id === tecId);
+      if (tec) {
+        const newCarga = Math.max(0, tec.cargaTrabajo - 1);
+        updateTecnico(tecId, {
+          cargaTrabajo: newCarga,
+          estado: newCarga >= tec.maxCarga ? 'ocupado' : 'disponible'
+        });
+      }
+    }
+    showToast(`Técnico desasignado del pedido ${pedido.id.toUpperCase()}`);
+  };
+
   return (
     <div className="slide-up">
       <div className="page-header">
@@ -233,7 +256,7 @@ const Tecnicos = () => {
         ) : (
           <div className="table-container">
             <table className="data-table">
-              <thead><tr><th>Pedido</th><th>Técnico</th><th>Zona</th><th>Fecha</th><th>Horario</th><th>Estado</th></tr></thead>
+              <thead><tr><th>Pedido</th><th>Técnico</th><th>Zona</th><th>Fecha</th><th>Horario</th><th>Estado</th><th>Acción</th></tr></thead>
               <tbody>
                 {instalaciones.map(p => (
                   <tr key={p.id}>
@@ -243,6 +266,13 @@ const Tecnicos = () => {
                     <td className="text-sm">{formatDate(p.fechaInstalacion)}</td>
                     <td className="text-sm">{p.horarioInstalacion || '-'}</td>
                     <td><span className={`badge ${getStatusBadge(p.estado)}`}>{getStatusLabel(p.estado)}</span></td>
+                    <td>
+                      {p.estado === 'programado' && (
+                        <button className="btn btn-ghost btn-sm" onClick={() => handleUnassign(p)} style={{ color: 'var(--danger-500)' }}>
+                          Desasignar
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
