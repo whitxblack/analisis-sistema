@@ -3,6 +3,38 @@ import { supabase } from '../services/supabaseClient';
 
 const DataContext = createContext();
 
+// Helper functions to map snake_case and camelCase keys
+const snakeToCamel = (str) =>
+  str.replace(/([-_][a-z])/g, (group) =>
+    group.toUpperCase().replace('-', '').replace('_', '')
+  );
+
+const camelToSnake = (str) =>
+  str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+
+const mapKeys = (obj, mappingFn) => {
+  if (Array.isArray(obj)) {
+    return obj.map(val => mapKeys(val, mappingFn));
+  }
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const nextKey = mappingFn(key);
+      const val = obj[key];
+      // Keep jsonb structure of 'items' inside facturas untouched
+      if (key === 'items') {
+        acc[nextKey] = val;
+      } else {
+        acc[nextKey] = mapKeys(val, mappingFn);
+      }
+      return acc;
+    }, {});
+  }
+  return obj;
+};
+
+const toCamel = (obj) => mapKeys(obj, snakeToCamel);
+const toSnake = (obj) => mapKeys(obj, camelToSnake);
+
 export const DataProvider = ({ children }) => {
   const [pedidos, setPedidos] = useState([]);
   const [tecnicos, setTecnicos] = useState([]);
@@ -49,14 +81,14 @@ export const DataProvider = ({ children }) => {
         supabase.from('usuarios').select('*').order('created_at', { ascending: false })
       ]);
 
-      setPedidos(dPedidos || []);
-      setTecnicos(dTecnicos || []);
-      setProductos(dProductos || []);
-      setMovimientos(dMovimientos || []);
-      setReposiciones(dReposiciones || []);
-      setFacturas(dFacturas || []);
-      setSeguimientos(dSeguimientos || []);
-      setUsers(dUsers || []);
+      setPedidos(toCamel(dPedidos) || []);
+      setTecnicos(toCamel(dTecnicos) || []);
+      setProductos(toCamel(dProductos) || []);
+      setMovimientos(toCamel(dMovimientos) || []);
+      setReposiciones(toCamel(dReposiciones) || []);
+      setFacturas(toCamel(dFacturas) || []);
+      setSeguimientos(toCamel(dSeguimientos) || []);
+      setUsers(toCamel(dUsers) || []);
     } catch (error) {
       console.error('Error loading data:', error);
       showToast('Error cargando datos de Supabase', 'error');
@@ -71,19 +103,23 @@ export const DataProvider = ({ children }) => {
 
   // Generic CRUD helpers for Supabase
   const addRecord = async (table, data, setter) => {
-    const { data: inserted, error } = await supabase.from(table).insert([data]).select().single();
+    const dbData = toSnake(data);
+    const { data: inserted, error } = await supabase.from(table).insert([dbData]).select().single();
     if (error) { showToast(`Error al crear en ${table}`, 'error'); console.error(error); return null; }
-    setter(prev => [inserted, ...prev]);
+    const mapped = toCamel(inserted);
+    setter(prev => [mapped, ...prev]);
     showToast('Registro creado exitosamente');
-    return inserted;
+    return mapped;
   };
 
   const updateRecord = async (table, id, data, setter) => {
-    const { data: updated, error } = await supabase.from(table).update(data).eq('id', id).select().single();
+    const dbData = toSnake(data);
+    const { data: updated, error } = await supabase.from(table).update(dbData).eq('id', id).select().single();
     if (error) { showToast(`Error al actualizar en ${table}`, 'error'); console.error(error); return null; }
-    setter(prev => prev.map(item => item.id === id ? updated : item));
+    const mapped = toCamel(updated);
+    setter(prev => prev.map(item => item.id === id ? mapped : item));
     showToast('Registro actualizado exitosamente');
-    return updated;
+    return mapped;
   };
 
   const deleteRecord = async (table, id, setter) => {
