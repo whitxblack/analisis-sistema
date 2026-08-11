@@ -8,7 +8,7 @@ import Modal from '../../components/common/Modal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { formatDate, getStatusBadge, getStatusLabel, searchFilter, getCurrentDate } from '../../utils/helpers';
 import { validateRequired, validateNombre, validateEmail, validateTelefono } from '../../utils/validators';
-import { zonas } from '../../data/demoData';
+import { zonas } from '../../utils/constants';
 import {
   Plus, Search, Eye, Edit, Trash2, Wrench, UserCheck, UserX,
   Calendar, MapPin, Clock, ChevronRight

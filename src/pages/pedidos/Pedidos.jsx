@@ -12,7 +12,7 @@ import Modal from '../../components/common/Modal';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import { formatDate, formatCurrency, getStatusBadge, getStatusLabel, searchFilter, getCurrentDate } from '../../utils/helpers';
 import { validateRequired, validateNombre, validateEmail, validateTelefono, validateDireccion, validatePrecio, validateFecha } from '../../utils/validators';
-import { estadosPedido, tiposServicio, zonas, prioridades } from '../../data/demoData';
+import { estadosPedido, tiposServicio, zonas, prioridades } from '../../utils/constants';
 
 const emptyPedido = {
   clienteNombre: '', fecha: getCurrentDate(), tipoServicio: '', descripcion: '',

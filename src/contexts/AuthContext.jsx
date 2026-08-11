@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { hashPassword } from '../utils/helpers';
-import { v4 as uuidv4 } from 'uuid'; // We might need this for UUIDs or let Supabase generate them. Let's let Supabase generate them using gen_random_uuid() in schema. Wait, we are just inserting.
+
 
 const AuthContext = createContext();
 
