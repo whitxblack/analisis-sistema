@@ -7,7 +7,7 @@
  */
 export const formatCurrency = (value) => {
   if (value === null || value === undefined) return 'Bs. 0.00';
-  return `Bs. ${Number(value).toLocaleString('es-BO', {
+  return `Bs. ${Number(value).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
@@ -19,7 +19,7 @@ export const formatCurrency = (value) => {
 export const formatDate = (dateStr) => {
   if (!dateStr) return '-';
   const date = new Date(dateStr + 'T00:00:00');
-  return date.toLocaleDateString('es-BO', {
+  return date.toLocaleDateString('es-VE', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -32,7 +32,7 @@ export const formatDate = (dateStr) => {
 export const formatDateTime = (dateStr) => {
   if (!dateStr) return '-';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('es-BO', {
+  return date.toLocaleDateString('es-VE', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

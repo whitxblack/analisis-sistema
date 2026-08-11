@@ -286,7 +286,7 @@ const Pedidos = () => {
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">Teléfono <span className="required">*</span></label>
-              <input name="telefono" className={`form-input ${errors.telefono ? 'error' : ''}`} value={formData.telefono} onChange={handleChange} placeholder="+591 7XXXXXXX" />
+              <input name="telefono" className={`form-input ${errors.telefono ? 'error' : ''}`} value={formData.telefono} onChange={handleChange} placeholder="+58 412XXXXXXX" />
               {errors.telefono && <span className="form-error">{errors.telefono}</span>}
             </div>
             <div className="form-group">
