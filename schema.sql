@@ -157,7 +157,6 @@ CREATE TABLE seguimientos (
 -- ==========================================
 -- Desactivar RLS (Row-Level Security)
 -- ==========================================
--- Esto evita errores de permisos al crear registros desde la web sin configurar políticas de Supabase Auth complejas.
 ALTER TABLE usuarios DISABLE ROW LEVEL SECURITY;
 ALTER TABLE tecnicos DISABLE ROW LEVEL SECURITY;
 ALTER TABLE pedidos DISABLE ROW LEVEL SECURITY;
@@ -171,16 +170,16 @@ ALTER TABLE seguimientos DISABLE ROW LEVEL SECURITY;
 -- Insertar Datos de Demostración
 -- ==========================================
 
--- Admin User (Password: Admin123! hasheado)
+-- Admin User
 INSERT INTO usuarios (nombre, apellido, email, password, rol) 
 VALUES ('Administrador', 'Sistema', 'admin@tecnoinnova.com', 'a6df053eaab8a7cb0f455c1b6946ceb1dcd53e9a4f475aeb9fa41e4162ceb7fb', 'admin');
 
--- Técnicos
-INSERT INTO tecnicos (nombre, apellido, email, telefono, especialidad, zona, estado, carga_trabajo, max_carga) VALUES
-('Juan', 'Pérez', 'jperez@tecnoinnova.com', '+58 71234567', 'Instalación de Cámaras (CCTV)', 'Zona Norte', 'disponible', 2, 5),
-('María', 'Gómez', 'mgomez@tecnoinnova.com', '+58 79876543', 'Sistemas Biométricos', 'Zona Sur', 'ocupado', 4, 4),
-('Carlos', 'López', 'clopez@tecnoinnova.com', '+58 71112233', 'Redes y Estructuras', 'Centro', 'disponible', 1, 5),
-('Ana', 'Torres', 'atorres@tecnoinnova.com', '+58 75556677', 'Mantenimiento General', 'Zona Este', 'disponible', 0, 4);
+-- Técnicos (Con UUIDs fijos para poder enlazarlos)
+INSERT INTO tecnicos (id, nombre, apellido, email, telefono, especialidad, zona, estado, carga_trabajo, max_carga) VALUES
+('e0c52eb2-0f04-4c4d-b6c8-5dc639420001', 'Juan', 'Pérez', 'jperez@tecnoinnova.com', '+58 71234567', 'Instalación de Cámaras (CCTV)', 'Zona Norte', 'disponible', 2, 5),
+('e0c52eb2-0f04-4c4d-b6c8-5dc639420002', 'María', 'Gómez', 'mgomez@tecnoinnova.com', '+58 79876543', 'Sistemas Biométricos', 'Zona Sur', 'ocupado', 4, 4),
+('e0c52eb2-0f04-4c4d-b6c8-5dc639420003', 'Carlos', 'López', 'clopez@tecnoinnova.com', '+58 71112233', 'Redes y Estructuras', 'Centro', 'disponible', 1, 5),
+('e0c52eb2-0f04-4c4d-b6c8-5dc639420004', 'Ana', 'Torres', 'atorres@tecnoinnova.com', '+58 75556677', 'Mantenimiento General', 'Zona Este', 'disponible', 0, 4);
 
 -- Productos
 INSERT INTO productos (nombre, codigo, categoria, stock_total, stock_disponible, stock_reservado, stock_minimo, precio_unitario, proveedor, ubicacion) VALUES
@@ -195,12 +194,12 @@ INSERT INTO productos (nombre, codigo, categoria, stock_total, stock_disponible,
 ('Lector Biométrico ZKTeco', 'BIO-ZK1', 'Control de Acceso', 15, 0, 15, 5, 1200.00, 'ZKCorp', 'Vitrina 2'),
 ('Cerradura Electromagnética 600lb', 'CER-600', 'Control de Acceso', 25, 20, 5, 10, 450.00, 'SecureDoors', 'Almacén A - Estante 4');
 
--- Pedidos (Con UUIDs corregidos a formato hexadecimal válido)
-INSERT INTO pedidos (id, cliente_nombre, fecha, tipo_servicio, descripcion, direccion, zona, telefono, email, estado, tecnico_nombre, fecha_instalacion, horario_instalacion, importe, observaciones, prioridad) VALUES
-('b3a5b6f0-0d3a-4a8b-b8a9-456b9c9f4d1e', 'Empresa Alpha S.R.L.', '2023-10-25', 'Instalación de Cámaras (CCTV)', 'Instalación de 8 cámaras en oficinas', 'Av. Principal 123', 'Centro', '+58 71234567', 'contacto@alpha.com', 'finalizado', 'Juan Pérez', '2023-11-02', '09:00 - 13:00', 8500.00, 'Cliente muy exigente con estética', 'alta'),
-('c4b6c7a1-1e4b-5b9c-c9b0-567c0d0a5e2f', 'Condominio El Bosque', '2023-11-05', 'Control de Acceso Biométrico', 'Lector para puerta principal', 'Calle Los Pinos 456', 'Zona Sur', '+58 79876543', 'admin@elbosque.com', 'programado', 'María Gómez', '2023-11-15', '14:00 - 18:00', 3200.00, 'Llevar taladro percutor pesado', 'media'),
-('d5c7d8a2-2f5c-6c0d-d0c1-678d1e1a6f3b', 'Tienda La Esquina', '2023-11-10', 'Alarma contra robos', 'Sistema de alarma con sensores', 'Av. Comercial 789', 'Zona Este', '+58 71112233', 'gerencia@laesquina.com', 'aprobado', NULL, NULL, NULL, 4500.00, 'Requiere instalación urgente', 'alta'),
-('e6d8e9a3-3a6d-7d1e-e1d2-789e2f2a7a4b', 'Colegio San Marcos', '2023-11-12', 'Mantenimiento Preventivo', 'Revisión de cámaras existentes', 'Calle Escolar 321', 'Zona Norte', '+58 75556677', 'direccion@sanmarcos.edu', 'consultaDeuda', NULL, NULL, NULL, 1200.00, 'Tienen factura pendiente', 'baja');
+-- Pedidos (Enlazados con tecnico_id correspondiente)
+INSERT INTO pedidos (id, cliente_nombre, fecha, tipo_servicio, descripcion, direccion, zona, telefono, email, estado, tecnico_id, tecnico_nombre, fecha_instalacion, horario_instalacion, importe, observaciones, prioridad) VALUES
+('b3a5b6f0-0d3a-4a8b-b8a9-456b9c9f4d1e', 'Empresa Alpha S.R.L.', '2023-10-25', 'Instalación de Cámaras (CCTV)', 'Instalación de 8 cámaras en oficinas', 'Av. Principal 123', 'Centro', '+58 71234567', 'contacto@alpha.com', 'finalizado', 'e0c52eb2-0f04-4c4d-b6c8-5dc639420001', 'Juan Pérez', '2023-11-02', '09:00 - 13:00', 8500.00, 'Cliente muy exigente con estética', 'alta'),
+('c4b6c7a1-1e4b-5b9c-c9b0-567c0d0a5e2f', 'Condominio El Bosque', '2023-11-05', 'Control de Acceso Biométrico', 'Lector para puerta principal', 'Calle Los Pinos 456', 'Zona Sur', '+58 79876543', 'admin@elbosque.com', 'programado', 'e0c52eb2-0f04-4c4d-b6c8-5dc639420002', 'María Gómez', '2023-11-15', '14:00 - 18:00', 3200.00, 'Llevar taladro percutor pesado', 'media'),
+('d5c7d8a2-2f5c-6c0d-d0c1-678d1e1a6f3b', 'Tienda La Esquina', '2023-11-10', 'Alarma contra robos', 'Sistema de alarma con sensores', 'Av. Comercial 789', 'Zona Este', '+58 71112233', 'gerencia@laesquina.com', 'aprobado', NULL, NULL, NULL, NULL, 4500.00, 'Requiere instalación urgente', 'alta'),
+('e6d8e9a3-3a6d-7d1e-e1d2-789e2f2a7a4b', 'Colegio San Marcos', '2023-11-12', 'Mantenimiento Preventivo', 'Revisión de cámaras existentes', 'Calle Escolar 321', 'Zona Norte', '+58 75556677', 'direccion@sanmarcos.edu', 'consultaDeuda', NULL, NULL, NULL, NULL, 1200.00, 'Tienen factura pendiente', 'baja');
 
 -- Facturas
 INSERT INTO facturas (pedido_id, cliente_nombre, fecha, fecha_vencimiento, subtotal, impuestos, total, estado, numero_factura, enviada, archivada) VALUES
