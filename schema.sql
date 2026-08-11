@@ -172,7 +172,7 @@ ALTER TABLE seguimientos DISABLE ROW LEVEL SECURITY;
 
 -- Admin User
 INSERT INTO usuarios (nombre, apellido, email, password, rol) 
-VALUES ('Administrador', 'Sistema', 'admin@tecnoinnova.com', 'a6df053eaab8a7cb0f455c1b6946ceb1dcd53e9a4f475aeb9fa41e4162ceb7fb', 'admin');
+VALUES ('Administrador', 'Sistema', 'admin3@gmail.com', 'a6df053eaab8a7cb0f455c1b6946ceb1dcd53e9a4f475aeb9fa41e4162ceb7fb', 'admin');
 
 -- Técnicos (Con UUIDs fijos para poder enlazarlos)
 INSERT INTO tecnicos (id, nombre, apellido, email, telefono, especialidad, zona, estado, carga_trabajo, max_carga) VALUES

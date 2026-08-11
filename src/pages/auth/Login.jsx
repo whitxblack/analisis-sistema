@@ -157,7 +157,7 @@ const Login = () => {
           borderRadius: 'var(--radius-md)', fontSize: '0.8125rem',
           color: 'var(--text-secondary)', textAlign: 'center'
         }}>
-          <strong>Demo Admin:</strong> admin@tecnoinnova.com / Admin123!
+          <strong>Usuario:</strong> admin3@gmail.com &nbsp;&nbsp;&nbsp;&nbsp; <strong>contraseña:</strong> Admin123!
         </div>
       </div>
     </div>
