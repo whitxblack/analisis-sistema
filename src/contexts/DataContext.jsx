@@ -14,12 +14,17 @@ export const DataProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   
   const [loading, setLoading] = useState(true);
-  const [toastMessage, setToastMessage] = useState(null);
+  const [toasts, setToasts] = useState([]);
 
-  const showToast = (message, type = 'success') => {
-    setToastMessage({ message, type });
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+  const removeToast = useCallback((id) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
+
+  const showToast = useCallback((message, type = 'success') => {
+    const id = Date.now().toString();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => removeToast(id), 4000);
+  }, [removeToast]);
 
   const loadData = useCallback(async () => {
     try {
@@ -207,7 +212,7 @@ export const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider value={{
       pedidos, tecnicos, productos, movimientos, reposiciones, facturas, seguimientos, users,
-      loading, toastMessage, showToast, refreshData: loadData,
+      loading, toasts, showToast, removeToast, refreshData: loadData,
       addPedido, updatePedido, deletePedido,
       addTecnico, updateTecnico, deleteTecnico,
       addProducto, updateProducto, deleteProducto,
